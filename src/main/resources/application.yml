@@ -1,0 +1,70 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+
+
+## LOGGING ##
+logging:
+  level:
+    ROOT: INFO
+    org.springframework.web.filter: TRACE
+    org.apache.http: TRACE
+    httpclient.wire: TRACE
+    org.springframework.security: TRACE
+    org.apache.kafka: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO
+    org.springframework.jdbc.core.JdbcTemplate: INFO
+    org.springframework.jdbc.core.StatementCreatorUtils: INFO
+    ##OFF not to show kafka logs
+
+
+## KAFKA ##
+kafka:
+  producer:
+    enabled: ${ENABLE_PRODUCER:true}
+    topic: ${TOPIC:hotel_availability_searches.evt}
+    group: ${GROUP:gr.hotel_availability_searches.evt}
+    dlq: ${DLQ:hotel_availability_searches.dlq}
+    group-dlq: ${GROUP_DLQ:gr.hotel_availability_searches.dlq}
+  consumer:
+    enabled: ${ENABLE_CONSUMER:true}
+    topic: ${TOPIC:hotel_availability_searches.evt}
+    group: ${GROUP:gr.hotel_availability_searches.evt}
+    dlq: ${DLQ:hotel_availability_searches.dlq}
+    group-dlq: ${GROUP_DLQ:gr.hotel_availability_searches.dlq}
+  server:
+    bootstrap: localhost:9092
+    concurrency: 3
+    enableAutoCommit: true
+    heartbeatInterval: 1000
+    autoCommitInterval: 10
+    maxPollInterval: 900000
+    maxPollRecords: 500
+    sessionTimeOut: 600000
+    requestTimeOut: 600000
+    autoOffsetReset: earliest
+    #trustStoreLocation: ${URL_TRUST_STORE:classpath:kafka.des.truststore.jks}
+    #trustStorePassword: ${KAFKA_PASSWORD:wupoSw-8CK#q}
+    #keystoreLocation: ${URL_KEY_STORE:classpath:kafka.des.keystore.jks}
+    #keystorePassword: ${KAFKA_PASSWORD:wupoSw-8CK#q}
+    #keyPassword: ${KAFKA_PASSWORD:wupoSw-8CK#q}
+    backOffAttempt: 2
+    backOffInterval: 180000
+    idempotence: true
+    acks: all
+    properties:
+       security:
+           protocol: PLAINTEXT
+

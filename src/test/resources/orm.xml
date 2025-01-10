@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="2.1"
+                 xmlns="http://xmlns.jcp.org/xml/ns/persistence/employeemapper"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/employeemapper ">
+
+    <named-native-query
+            name="CountryViewEntity.getEmployeeCountries"
+            result-class="com.avoris.booking.reservation.searchservice.infrastructure.adapter.db.entity.views.CountryViewEntity">
+        <description>Query EmployeeCountries  </description>
+        <query>
+            <![CDATA[
+	    	SELECT
+	    	    C.ID_COUNTRY,
+                C.ISO_CODE,
+                C.CP_USE,
+                C.PORTAL_USE,
+                C.FORMATION_USE,
+                C.CREATED_BY,
+                C.CREATION_DATE,
+                C.LAST_UPDATED_BY,
+                C.LAST_UPDATE_DATE,
+                CD.DESCRIPTION
+	    	 FROM sue_countries C , sue_countries_tr CD
+             WHERE C.id_country = CD.id_country
+             AND C.id_country in (:country_ids)
+             AND CD.iso_code_lang = :iso_code_lang
+        ]]>
+        </query>
+    </named-native-query>
+
+    <named-native-query
+            name="CompanyViewEntity.getCompanies"
+            result-class="com.avoris.booking.reservation.searchservice.infrastructure.adapter.db.entity.views.CompanyViewEntity">
+        <description>Query Companies</description>
+        <query>
+            <![CDATA[
+             select c.*
+             from sue_companies c , sue_countries c1
+             where c.id_country = c1.id_country
+             and c1.iso_code = :iso_code
+             AND c.id_company in (:company_ids)
+          ]]>
+        </query>
+
+    </named-native-query>
+
+    <named-native-query
+            name="WorkCenterViewEntity.findByIdDestination"
+            result-class="com.avoris.booking.reservation.searchservice.infrastructure.adapter.db.entity.views.WorkCenterViewEntity">
+        <description>Query Work Centers</description>
+        <query>
+            <![CDATA[
+             select *
+             from sue_work_centers
+             where id_destination = :id_destination
+             and id_work_center in (:work_center_ids)
+          ]]>
+        </query>
+
+    </named-native-query>
+
+    <named-native-query
+            name="DestinationViewEntity.getDestinations"
+            result-class="com.avoris.booking.reservation.searchservice.infrastructure.adapter.db.entity.views.DestinationViewEntity">
+        <description>Query Destinations</description>
+        <query>
+            <![CDATA[
+             select d.*
+             from sue_destination d , sue_countries c
+             where d.id_country = c.id_country
+             and c.iso_code = :iso_code
+             AND d.id_destination in (:destination_ids)
+          ]]>
+        </query>
+
+    </named-native-query>
+
+    <named-native-query
+            name="EmployeeCategoriesViewEntity.getEmployeeCategories"
+            result-class="com.avoris.booking.reservation.searchservice.infrastructure.adapter.db.entity.views.EmployeeCategoriesViewEntity">
+        <description>Example of named query </description>
+        <query>
+            <![CDATA[
+            select cat_contract.ID_CATEGORY_CONTRACT,
+            cat.SHORT_DESCRIPTION,
+            cat_contract.BEGIN_DATE,
+            cat_contract.END_DATE
+            from
+            SUE_EMPLOYEE employee,
+            SUE_CONTRACTS contract,
+            SUE_CATEGORIES_TR cat,
+            SUE_CATEGORIES_CONTRACTS cat_contract,
+            SUE_CATEGORIES_COUNTRIES cat_countries
+            where employee.ID_EMPLOYEE = contract.ID_EMPLOYEE
+            AND cat_contract.ID_CONTRACT = contract.ID_CONTRACT
+            AND cat_contract.ID_CATEGORY_CONTRACT = cat_countries.ID_CATEGORY
+            AND cat.ID_CATEGORY = cat_countries.ID_CATEGORY
+            AND employee.ID_EMPLOYEE = :employee_id
+          ]]>
+        </query>
+
+    </named-native-query>
+
+    <named-native-query
+            name="AuthorizationViewEntity.getAuthorizations"
+            result-class="com.avoris.booking.reservation.searchservice.infrastructure.adapter.db.entity.views.AuthorizationViewEntity">
+        <description>Query Authorizations </description>
+        <query>
+            <![CDATA[
+            SELECT a.ID_AUTHORIZATION_DATA,
+                   a.ID_RESPONSIBILITY,
+                   a.ID_WORK_CENTER,
+                   a.ID_COMPANY,
+                   a.ID_COUNTRY,
+                   a.ID_DESTINATION,
+                   a.ID_DEPARTMENT
+            from sue_users u,
+                 sue_rumbo_user ru,
+                 sue_rumbouser_responsibility r,
+                 sue_data_authorization a
+            where u.id_user  = ru.id_user
+            and ru.id_user = r.id_user
+            and a.ID_RESPONSIBILITY = r.ID_RESPONSIBILITY
+            and u.user_code  = :user_code
+          ]]>
+        </query>
+    </named-native-query>
+
+</entity-mappings>
