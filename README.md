@@ -1,1 +1,2 @@
-Rest controller hexagonal with kafka use
+= Hexagonal + Rest controller  + Kafka =
+
